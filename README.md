@@ -12,4 +12,11 @@ To enable only the P component, the hyperparams = {0.15,0,0} configuration is us
 To enable only the P and D components, the hyperparams = {0.15,0.0003,0} configuration is used. The same behavior is noticed but in fast manner. The car overshoot the lane and crashes. A fine tuned parameter makes the car steer stablely along the central line. 
 
 ### PDI Controller : 
-To enable it, the hyperparams = {0.15,0.0003,0} configuration is used. The result is perfect and the car behaves as expected. It steers smoothly along the central line.
+To enable it, the hyperparams = {0.15,0.0003,3} configuration is used. The result is perfect and the car behaves as expected. It steers smoothly along the central line.
+
+## Hyperparameters Tuning :
+All parameters were tuned manually.  This approach quickly lead to unrecoverable crashes of the car and require a manual restart of the simulator. The process used was as follows:
+    1. Enable P controller, with hyperparams[1] and hyperparams[2] to zero
+    2. Enable PD Controller by adding and increasing hyperparams[1] until oscillations. When the crashes 
+    3. Enable PID Controller by adding and increasing hyperparams[1] until the car steers fine.
+
