@@ -13,7 +13,7 @@ double deg2rad(double x) { return x * pi() / 180; }
 double rad2deg(double x) { return x * 180 / pi(); }
 
 
-bool twiddle_enabled = true;
+bool twiddle_enabled = false;
 // Added for "twiddling" the PID coefficients
 double twiddle_best_error_ = 1000000;
 int twiddle_state_ = 0;
@@ -114,8 +114,21 @@ int main()
   PID pid;
   PID speed_pid;
 
-  pid.Init(0.15, 0.001, 1.5); // best params so far found with twiddle on continuous loop
-  speed_pid.Init(0.2, 0.001, 2.0);
+
+  std::vector<double> hyperparams;
+  //Enable only P Controller
+  //hyperparams = {0.15,0,0};
+
+  //Enable the D Controller
+    //hyperparams = {0.15,0.00009,0};
+
+
+  //Enable the PID Controller
+  hyperparams = {0.15,0.0003,3};
+
+
+  pid.Init(hyperparams[0], hyperparams[1], hyperparams[2]);
+  speed_pid.Init(hyperparams[0], hyperparams[1], hyperparams[2]);
 
   h.onMessage([&pid,&speed_pid](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
@@ -177,7 +190,7 @@ int main()
 
 			 json msgJson;
 			 msgJson["steering_angle"] = steer_value;
-			 msgJson["throttle"] = .4;//speed_value;
+			 msgJson["throttle"] = speed_value;
 			 auto msg = "42[\"steer\"," + msgJson.dump() + "]";
 			 std::cout << msg << std::endl;
 			 ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
